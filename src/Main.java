@@ -44,11 +44,12 @@ public class Main {
     private static void game() {
         Gallow gallow = new Gallow();
         String word = words.get(ThreadLocalRandom.current().nextInt(words.size()));
+        List<Character> wrongLetters = new ArrayList<>();
         boolean[] lettersFlags = new boolean[word.length()];
         boolean win = false;
         boolean haveValidationErrors = false;
         while (gallow.getErrors() < 6 && !win) {
-            printScreen(gallow, word, lettersFlags);
+            printScreen(gallow, word, lettersFlags, wrongLetters);
             if (haveValidationErrors) {
                 System.out.println("При вводе была допущена ошибка. ВАЖНО! Вводить нужно только одну букву на русском языке!");
                 haveValidationErrors = false;
@@ -68,6 +69,7 @@ public class Main {
                         win = true;
                     }
                 } else {
+                    wrongLetters.add(letter);
                     gallow.makeAnError();
                 }
             } else {
@@ -75,13 +77,13 @@ public class Main {
             }
         }
         if (gallow.getErrors() >= 6) {
-            printScreen(gallow, word, lettersFlags);
+            printScreen(gallow, word, lettersFlags, wrongLetters);
             System.out.println("Тебя повесили!");
         }
         start();
     }
 
-    private static void printScreen(Gallow gallow, String word, boolean[] lettersFlags) {
+    private static void printScreen(Gallow gallow, String word, boolean[] lettersFlags, List<Character> errors) {
         System.out.println();
         System.out.println();
         System.out.println();
@@ -89,7 +91,7 @@ public class Main {
         System.out.println();
         System.out.println();
         System.out.println();
-        System.out.println("Ошибок: " + gallow.getErrors());
+        System.out.println("Ошибок: (" + gallow.getErrors() + ") "+ errors.toString());
         gallow.printGallow();
         printWord(word, lettersFlags);
     }
